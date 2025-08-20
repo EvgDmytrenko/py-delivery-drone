@@ -11,7 +11,7 @@ class BaseRobot:
             self: BaseRobot,
             name: str,
             weight: int,
-            coords=None
+            coords: list | None = None
     ) -> None:
         if coords is None:
             coords = [0, 0]
@@ -52,16 +52,16 @@ class FlyingRobot(BaseRobot):
             self: FlyingRobot,
             name: str,
             weight: int,
-            coords=None
+            coords: list | None = None
     ) -> None:
         if coords is None:
             coords = [0, 0, 0]
         super().__init__(name, weight, coords)
 
-    def go_up(self: FlyingRobot, z_coord: int) -> None:
+    def go_up(self: FlyingRobot, z_coord: int = 1) -> None:
         self.coords[2] += z_coord
 
-    def go_down(self: FlyingRobot, z_coord: int) -> None:
+    def go_down(self: FlyingRobot, z_coord: int = 1) -> None:
         self.coords[2] -= z_coord
 
 
@@ -72,7 +72,7 @@ class DeliveryDrone(FlyingRobot):
             weight: int,
             max_load_weight: int,
             current_load: Cargo | None,
-            coords=None
+            coords: list | None = None
     ) -> None:
         if coords is None:
             coords = [0, 0, 0]
@@ -85,33 +85,9 @@ class DeliveryDrone(FlyingRobot):
             self: DeliveryDrone,
             current_load: Cargo | None
     ) -> None:
-        if self.current_load is None and current_load is Cargo:
+        if self.current_load is None and isinstance(current_load, Cargo):
             if current_load.weight <= self.max_load_weight:
                 self.current_load = current_load
 
-
     def unhook_load(self: DeliveryDrone) -> None:
         self.current_load = None
-
-
-cargo = Cargo(14)
-drone = DeliveryDrone(
-    name="Jim",
-    weight=18,
-    coords=[11, -4, 16],
-    max_load_weight=20,
-    current_load=None,
-)
-drone.hook_load(cargo)
-# drone.current_load is cargo
-
-cargo2 = Cargo(2)
-drone.hook_load(cargo2)
-# drone.current_load is cargo
-# didn't hook cargo2, cargo already in current load
-
-
-
-
-
-
